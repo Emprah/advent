@@ -4,8 +4,10 @@ import com.emprah.advent.Puzzle
 import com.emprah.advent.util.FileService
 import org.springframework.stereotype.Component
 
-@Component
-internal class Day01(
+const val taskId = "Day01Part01"
+
+@Component(taskId)
+internal class Day01Part01(
     private val fileService: FileService,
     private val calculator: CalibrationCalculator
 ) : Puzzle() {
@@ -14,6 +16,8 @@ internal class Day01(
     private val dayPath = "23/day01/"
 
     override fun solve() {
+        println("Solving $taskId")
+
         val fileContent = fileService
             .getFile(inputFile, dayPath)
             ?.bufferedReader()?.readLines()
