@@ -27,7 +27,7 @@ internal class Day01Part01(
             return
         }
 
-        val calibrationSum = calculator.calculateCalibration(fileContent)
+        val calibrationSum = calculator.calculateCalibrationDigitsOnly(fileContent)
         println("Calibration sum is $calibrationSum")
     }
 }

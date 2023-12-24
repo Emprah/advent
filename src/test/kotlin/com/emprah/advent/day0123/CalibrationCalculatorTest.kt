@@ -10,20 +10,37 @@ class CalibrationCalculatorTest {
 
     companion object {
         @JvmStatic
-        private fun calibrationParams() = Stream.of(
+        private fun calibrationParamsDigitsOnly() = Stream.of(
             Arguments.of("Empty line", listOf(""), 0),
             Arguments.of("Line without digits", listOf("sdf"), 0),
             Arguments.of("Line with single digit", listOf("sd5"), 55),
             Arguments.of("Line with more than two digits", listOf("j3sdf5sd4f"), 34),
             Arguments.of("Multiple lines", listOf("", "sdf", "sd5", "j3sdf5sd4f"), 89),
         )
+
+        @JvmStatic
+        private fun calibrationParamsExt() = Stream.of(
+            Arguments.of("Empty line", listOf(""), 0),
+            Arguments.of("Line without digits", listOf("sdf"), 0),
+            Arguments.of("Line with single digit", listOf("assfive"), 55),
+            Arguments.of("Line with more than two digits", listOf("jthreesdffivesdfourf"), 34),
+            Arguments.of("Multiple lines", listOf("", "sdf", "assfive", "jthreesdffivesdfourf"), 89),
+        )
     }
     
     @ParameterizedTest(name = "{0}")
-    @MethodSource("calibrationParams")
-    fun calcCalibration(testcase: String, input: List<String>, expectedResult: Int) {
+    @MethodSource("calibrationParamsDigitsOnly")
+    fun calcCalibrationDigitsOnly(testcase: String, input: List<String>, expectedResult: Int) {
         val sut = CalibrationCalculator
-        val result = sut.calculateCalibration(input)
+        val result = sut.calculateCalibrationDigitsOnly(input)
+        assertThat(result).isEqualTo(expectedResult)
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("calibrationParamsExt")
+    fun calcCalibrationExt(testcase: String, input: List<String>, expectedResult: Int) {
+        val sut = CalibrationCalculator
+        val result = sut.calculateCalibrationExt(input)
         assertThat(result).isEqualTo(expectedResult)
     }
 }
