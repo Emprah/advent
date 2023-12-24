@@ -4,7 +4,7 @@ import com.emprah.advent.Puzzle
 import com.emprah.advent.util.FileService
 import org.springframework.stereotype.Component
 
-const val taskId = "Day01Part01"
+private const val taskId = "Day01Part01"
 
 @Component(taskId)
 internal class Day01Part01(
