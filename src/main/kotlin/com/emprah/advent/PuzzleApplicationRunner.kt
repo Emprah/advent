@@ -6,7 +6,7 @@ import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
 
 @Component
-class PuzzleApplicationRunner(@Qualifier("Day01Part01") private val puzzle: Puzzle) : ApplicationRunner {
+class PuzzleApplicationRunner(@Qualifier("Day01Part02") private val puzzle: Puzzle) : ApplicationRunner {
 
     override fun run(args: ApplicationArguments?) {
         println("Running puzzle")
