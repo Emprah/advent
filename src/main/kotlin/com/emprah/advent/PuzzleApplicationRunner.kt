@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 private val logger = KotlinLogging.logger {}
 
 @Component
-class PuzzleApplicationRunner(@Qualifier("Day03Part01") private val puzzle: Puzzle) : ApplicationRunner {
+class PuzzleApplicationRunner(@Qualifier("Day03Part02") private val puzzle: Puzzle) : ApplicationRunner {
 
     override fun run(args: ApplicationArguments?) {
         logger.info{"Running puzzle"}

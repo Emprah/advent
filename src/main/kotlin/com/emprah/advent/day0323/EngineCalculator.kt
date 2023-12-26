@@ -13,6 +13,14 @@ object EngineCalculator {
             .sumOf { it.value }
     }
 
+    fun getSumOfGearRatios(fileContent: List<String>): Int {
+        val (partNumbers, symbols) = parseEngineSpec(fileContent)
+
+        return symbols
+            .mapNotNull { asGear(it, partNumbers) }
+            .sumOf { it.ratio }
+    }
+
     private fun parseEngineSpec(input: List<String>): EngineSpec {
         val partNumbers = mutableListOf<PartNumber>()
         val symbols = mutableListOf<Symbol>()
@@ -42,6 +50,20 @@ object EngineCalculator {
             .filter { part.column - 1 <= it.column && it.column <= part.lastColumn + 1 }
             .isNotEmpty()
     }
+    
+    private fun asGear(symbol: Symbol, parts: List<PartNumber>): Gear? {
+        if (symbol.value != '*')
+            return null
+        
+        val connectedParts = parts
+            .filter { it.line == symbol.line - 1 || it.line == symbol.line || it.line == symbol.line + 1 }
+            .filter { symbol.column in IntRange(it.column - 1, it.lastColumn + 1) }
+
+        return if (connectedParts.size == 2)
+            Gear(connectedParts[0].value * connectedParts[1].value)
+        else
+            null
+    }
 }
 
 private data class EngineSpec (
@@ -57,8 +79,12 @@ private data class PartNumber (
     val lastColumn = column + value.toString().length - 1
 }
 
-private data class Symbol(
+private data class Symbol (
     val value: Char,
     val line: Int,
     val column: Int,
+)
+
+private data class Gear (
+    val ratio: Int
 )
