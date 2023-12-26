@@ -60,6 +60,12 @@ object GameCalculator {
             return null
         }
     }
+
+    fun getMinimalCubesValue(fileContent: List<String>): Any {
+        return fileContent
+            .mapNotNull { parseLine(it) }
+            .sumOf { it.maxRedCubes * it.maxGreenCubes * it.maxBlueCubes }
+    }
 }
 
 private data class Game(val id: Int, val maxRedCubes: Int, val maxGreenCubes: Int, val maxBlueCubes: Int)
