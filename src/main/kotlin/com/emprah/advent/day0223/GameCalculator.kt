@@ -10,46 +10,47 @@ private val logger = KotlinLogging.logger {}
 object GameCalculator {
 
     fun getSumOfValidGameIds(fileContent: List<String>) : Int {
-        val noRedCubes = 12
-        val noGreenCubes = 13
-        val noBlueCubes = 14
+        val availableRedCubes = 12
+        val availableGreenCubes = 13
+        val availableBlueCubes = 14
 
         return fileContent
             .mapNotNull { parseLine(it) }
-            .filter { it.maxRedCubes <= noRedCubes && it.maxGreenCubes <= noGreenCubes && it.maxBlueCubes <= noBlueCubes }
+            .filter { it.maxRedCubes <= availableRedCubes && it.maxGreenCubes <= availableGreenCubes && it.maxBlueCubes <= availableBlueCubes }
             .fold(0) { acc, game -> acc + game.id }
 
     }
 
     private fun parseLine(line: String): Game? {
-        val pattern = """Game (\d+): (?:(\d+) (red|green|blue).*)*""".toRegex()
-        val matchResult = pattern.find(line)
+        val gamePattern = """Game (\d+):""".toRegex()
+        val gameMatch = gamePattern.find(line)
+        val cubeValuePattern = """(\d+) (red|green|blue)""".toRegex()
+        val cubeValueMatches = cubeValuePattern.findAll(line).toList()
 
-        if (matchResult == null) {
+        if (gameMatch == null || cubeValueMatches.isEmpty()) {
             logger.error { "Could not parse the following line as valid game: $line" }
             return null
         }
 
-        return mapToGame(matchResult)
+        return mapToGame(gameMatch, cubeValueMatches)
     }
 
-    private fun mapToGame(match: MatchResult): Game? {
+    private fun mapToGame(gameMatch: MatchResult, cubeValueMatches: List<MatchResult>): Game? {
         var maxRedCubes = 0
         var maxGreenCubes = 0
         var maxBlueCubes = 0
 
         try {
-            for (index in 3 ..< match.groupValues.size step 2) {
-                when(match.groupValues[index]) {
-                    "red" -> maxRedCubes = max(maxRedCubes, match.groupValues[index - 1].toInt())
-                    "green" -> maxGreenCubes = max(maxGreenCubes, match.groupValues[index - 1].toInt())
-                    "blue" -> maxBlueCubes = max(maxBlueCubes, match.groupValues[index - 1].toInt())
-                    else -> logger.error { "Did not find expected red|green|blue value, found ${match.groupValues[index]} instead" }
+            for (match in cubeValueMatches) {
+                when (match.groupValues[2]) {
+                    "red" -> maxRedCubes = max(maxRedCubes, match.groupValues[1].toInt())
+                    "green" -> maxGreenCubes = max(maxGreenCubes, match.groupValues[1].toInt())
+                    "blue" -> maxBlueCubes = max(maxBlueCubes, match.groupValues[1].toInt())
                 }
             }
 
             return Game(
-                match.groupValues[1].toInt(),
+                gameMatch.groupValues[1].toInt(),
                 maxRedCubes,
                 maxGreenCubes,
                 maxBlueCubes)
