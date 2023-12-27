@@ -7,4 +7,11 @@ object StringExtensions {
         val regex = pattern.toRegex()
         return regex.findAll(this)
     }
+
+    fun String.allNumbers(): Sequence<Int> {
+        val regex = """\d+""".toRegex()
+        return regex
+            .findAll(this)
+            .map { it.value.toInt(10) }
+    }
 }
