@@ -13,6 +13,28 @@ class ScratchcardCalculator {
             .sumOf { calculatePoints(it) }
     }
 
+    fun getCardCountWithDuplication(input: List<String>): Any {
+        val cardsWithCounts = input
+            .map { toScratchcard(it) }
+            .map { Pair(it, 1) }
+            .toMutableList()
+
+        for ((i, cardWithCount) in cardsWithCounts.withIndex()) {
+            if (cardWithCount.first.hits > 0) {
+                for (j in IntRange(1, cardWithCount.first.hits)) {
+                    val entryToUpdate = cardsWithCounts.getOrNull(i + j)
+
+                    if (entryToUpdate != null) {
+                        cardsWithCounts[i + j] = entryToUpdate.copy(second = entryToUpdate.second + cardWithCount.second)
+                    }
+                }
+            }
+        }
+
+        return cardsWithCounts
+            .sumOf { it.second }
+    }
+
     private fun toScratchcard(line: String): Scratchcard {
         val sections = line.split(':', '|')
 
@@ -24,12 +46,10 @@ class ScratchcardCalculator {
     }
 
     private fun calculatePoints(card: Scratchcard): Int {
-        val hits = card.winningNumbers.intersect(card.guesses).size
-
-        return if (hits == 0)
+        return if (card.hits == 0)
             0
         else
-            2.0.pow(hits - 1).toInt()
+            2.0.pow(card.hits - 1).toInt()
     }
 
 }
@@ -38,4 +58,6 @@ private data class Scratchcard(
     val id: Int,
     val winningNumbers: Set<Int>,
     val guesses: Set<Int>
-)
+) {
+    val hits = winningNumbers.intersect(guesses).size
+}
