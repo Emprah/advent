@@ -1,5 +1,6 @@
 package com.emprah.advent.day0323
 
+import com.emprah.advent.util.StringExtensions.matchesOf
 import org.springframework.stereotype.Service
 
 @Service
@@ -37,11 +38,6 @@ object EngineCalculator {
         }
 
         return EngineSpec(partNumbers, symbols)
-    }
-
-    private fun String.matchesOf(pattern: String): Sequence<MatchResult> {
-        val regex = pattern.toRegex()
-        return regex.findAll(this)
     }
 
     private fun isValidPart(part: PartNumber, symbols: List<Symbol>): Boolean {
